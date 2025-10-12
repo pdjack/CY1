@@ -5,16 +5,10 @@ public class Player : MonoBehaviour
     public int maxSpeed;
     public int jumpPower;
     
-    public float climbSpeed;
-    private float _vertical;
-    private bool _isLadder;
-    private bool _isClimbing;
-    
     Rigidbody2D _rigid;
     Animator _animator;
     SpriteRenderer _spriteRenderer;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         _rigid = GetComponent<Rigidbody2D>();
@@ -24,13 +18,6 @@ public class Player : MonoBehaviour
     
     void Update()
     {
-        //ladder
-        _vertical = Input.GetAxis("Vertical");
-        if (_isLadder && Mathf.Abs(_vertical) > 0f)
-        {
-            _isClimbing = true;
-        }
-        
         //jump, jump animation(true)
         if (Input.GetKeyDown(KeyCode.Space) && !_animator.GetBool("isJumping"))
         {
@@ -67,17 +54,6 @@ public class Player : MonoBehaviour
     
     void FixedUpdate()
     {
-        //ladder
-        if (_isClimbing)
-        {
-            _rigid.gravityScale = 0f;
-            _rigid.linearVelocity = new Vector2(_rigid.linearVelocityX, _rigid.linearVelocityY * climbSpeed);
-        }
-        else
-        {
-            _rigid.gravityScale = 1f;
-        }
-        
         //player move
         float h = Input.GetAxis("Horizontal");
         _rigid.AddForce(Vector2.right * (h * 30.0f), ForceMode2D.Impulse);
@@ -104,24 +80,6 @@ public class Player : MonoBehaviour
                 _animator.SetBool("isJumping", false);
                 //Debug.Log("isJump:" + _animator.GetBool("isJump") );
             }
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Ladder"))
-        {
-            _isLadder = true;
-            Debug.Log("_isLadder = true");
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Ladder"))
-        {
-            _isLadder = false;
-            _isClimbing = false;
         }
     }
     
