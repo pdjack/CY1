@@ -73,12 +73,9 @@ public class Player : MonoBehaviour
         {
             Debug.DrawRay(_rigid.position, Vector3.down, new Color(0,1,0));
             RaycastHit2D rayHit = Physics2D.Raycast(_rigid.position, Vector3.down, 10000000, LayerMask.GetMask("Platform"));
-            //Debug.Log("position:" + _rigid.position);
             if (rayHit.distance < 1.0f)
             {
-                //Debug.Log("rayHit.distance:" + rayHit.distance);
                 _animator.SetBool("isJumping", false);
-                //Debug.Log("isJump:" + _animator.GetBool("isJump") );
             }
         }
     }

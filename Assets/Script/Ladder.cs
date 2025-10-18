@@ -4,10 +4,10 @@ public class Ladder : MonoBehaviour
 {
     Rigidbody2D _rigid;
 
-    public float vertical;
+    float vertical;
     public float climbSpeed;
-    public bool _isLadder;
-    public bool _isClimbing;
+    bool _isLadder;
+    bool _isClimbing;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -53,19 +53,17 @@ public class Ladder : MonoBehaviour
 
     void OnLadder()
     {
-        Debug.Log("부호: " + Mathf.Sign(_rigid.linearVelocity.y));
         _rigid.gravityScale = 0f;
         _rigid.linearVelocityY = climbSpeed * Mathf.Sign(vertical);
         if (vertical == 0f)
         {
             _rigid.linearVelocityY = 0.3f * Mathf.Sign(vertical);
-            Debug.Log("곱한 값: " + _rigid.linearVelocity.y);
         }
         
     }
 
     void OffLadder()
     {
-        _rigid.gravityScale = 1f;
+        _rigid.gravityScale = 2f;
     }
 }
