@@ -4,11 +4,12 @@ using UnityEngine;
 public class SlimeEnemy : MonoBehaviour
 {
     public int direction;
-    public int maxSpeed;
+    public float maxSpeed;
 
     public GameObject player;
     
     Rigidbody2D _rb;
+    SpriteRenderer _sr;
     Animator _anim;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -16,6 +17,7 @@ public class SlimeEnemy : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
+        _sr = GetComponent<SpriteRenderer>();
     }
 
     // Update is called once per frame
@@ -49,5 +51,17 @@ public class SlimeEnemy : MonoBehaviour
         }
         
         return direction;
+    }
+
+    public void OnDamaged()
+    {
+        _sr.color = new Color(1,0.3537736f,0.3537736f);
+        _rb.AddForce(new Vector2(MoveDirection() * -20, _rb.linearVelocity.y), ForceMode2D.Impulse);
+        Invoke("OffDamaged", 0.5f);
+    }
+
+    void OffDamaged()
+    {
+        _sr.color = new Color(1,1,1,1f);
     }
 }

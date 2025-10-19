@@ -2,18 +2,27 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public GameObject weapon;
     public int maxSpeed;
     public int jumpPower;
     
     Rigidbody2D _rigid;
     Animator _animator;
     SpriteRenderer _spriteRenderer;
+    SpriteRenderer _weaponSr;
     
+    BoxCollider2D _boxCollider_Weapon;
     void Awake()
     {
         _rigid = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _weaponSr = weapon.GetComponent<SpriteRenderer>();
+        _boxCollider_Weapon = weapon.GetComponent<BoxCollider2D>();
+        if (_weaponSr == null)
+        {
+            Debug.Log("null");
+        }
     }
     
     void Update()
@@ -28,6 +37,11 @@ public class Player : MonoBehaviour
                 _animator.SetBool("isJumping", true);
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            weapon.SetActive(true);
+        }
         
         //stop move
         if (Input.GetButtonUp("Horizontal"))
@@ -35,10 +49,31 @@ public class Player : MonoBehaviour
             _rigid.linearVelocity = new Vector2(_rigid.linearVelocity.normalized.x * 0.5f , _rigid.linearVelocity.y);
         }
 
-        //move - flipX
+        //flipX (move, weapon)
         if (Input.GetButton("Horizontal"))
         {
-            _spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") < 0;
+            bool isFlipX = Input.GetAxisRaw("Horizontal") < 0;
+            _spriteRenderer.flipX = isFlipX;
+            _weaponSr.flipX = isFlipX;
+
+            if (isFlipX)
+            {
+                weapon.transform.localPosition = new Vector3(-0.5f, weapon.transform.localPosition.y, weapon.transform.localPosition.z);
+                
+                if (_boxCollider_Weapon)
+                {
+                    _boxCollider_Weapon.offset = new Vector2(-0.56f, 0.0f);
+                }
+            }
+            else
+            {
+                weapon.transform.localPosition = new Vector3(0.5f, weapon.transform.localPosition.y, weapon.transform.localPosition.z);
+                if (_boxCollider_Weapon)
+                {
+                    _boxCollider_Weapon.offset = new Vector2(0.56f, 0.0f);
+                }
+            }
+            
         }
 
         //move animation
