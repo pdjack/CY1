@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class SlimeEnemy : MonoBehaviour
 {
-    public int direction;
+    public int jumpPower;
     public float maxSpeed;
+    int _direction;
 
     public GameObject player;
     
@@ -29,28 +30,54 @@ public class SlimeEnemy : MonoBehaviour
         {
             _rb.linearVelocity = new Vector2(maxSpeed * MoveDirection(), _rb.linearVelocity.y);
             _anim.SetBool("isWalk", true);
+            
         }
         //move animation(false)
         else
         {
             _anim.SetBool("isWalk", false);
         }
+        
     }
 
+    void EnemyJump()
+    {
+        Debug.DrawRay(_rb.position, Vector3.down, new Color(0,1,0));
+        RaycastHit2D rayHit = Physics2D.Raycast(transform.position, Vector3.down, 20, LayerMask.GetMask("Platform"));
+        if (rayHit.distance < 1.0f)
+        {
+            _rb.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        }
+    }
+    
     //get SlimeEnemy move-direction
     int MoveDirection()
     {
-        direction = 0;
+        //left direction, jump
+        _direction = 0;
         if (transform.position.x - player.transform.position.x > 0)
         {
-            direction = -1;
+            _direction = -1;
+            Debug.DrawRay(_rb.position, Vector3.left, new Color(0,1,0));
+            RaycastHit2D rayHit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 0.2f), Vector3.left, 10000000, LayerMask.GetMask("Platform"));
+            if (rayHit.distance < 1.0f && rayHit.distance > 0.0f)
+            {
+                EnemyJump();
+            }
         }
+        //right direction, jump
         else if (transform.position.x - player.transform.position.x < 0)
         {
-            direction = 1;
+            _direction = 1;
+            Debug.DrawRay(_rb.position, Vector3.right, new Color(0,1,0));
+            RaycastHit2D rayHit = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 0.2f), Vector3.right, 10000000, LayerMask.GetMask("Platform"));
+            if (rayHit.distance < 1.0f && rayHit.distance > 0.0f)
+            {
+                EnemyJump();
+            }
         }
         
-        return direction;
+        return _direction;
     }
 
     public void OnDamaged()
