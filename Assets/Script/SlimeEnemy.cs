@@ -3,10 +3,15 @@ using UnityEngine;
 
 public class SlimeEnemy : MonoBehaviour
 {
+    
+    public int slimeHp = 50;
     public int jumpPower;
     public float maxSpeed;
+    
     int _direction;
 
+    public GameObject weapon;
+    
     public GameObject player;
     
     Rigidbody2D _rb;
@@ -19,6 +24,11 @@ public class SlimeEnemy : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         _sr = GetComponent<SpriteRenderer>();
+        
+        if (weapon == null)
+        {
+            Debug.Log("null");
+        }
     }
 
     // Update is called once per frame
@@ -84,11 +94,23 @@ public class SlimeEnemy : MonoBehaviour
     {
         _sr.color = new Color(1,0.3537736f,0.3537736f);
         _rb.AddForce(new Vector2(MoveDirection() * -20, _rb.linearVelocity.y), ForceMode2D.Impulse);
+        
+        slimeHp -= weapon.GetComponent<Weapon>().WeaponDamage();
+        if (slimeHp <= 0)
+        {
+            DieEffect();
+        }
+        
         Invoke("OffDamaged", 0.5f);
     }
 
     void OffDamaged()
     {
         _sr.color = new Color(1,1,1,1f);
+    }
+
+    void DieEffect()
+    {
+        this.gameObject.SetActive(false);
     }
 }

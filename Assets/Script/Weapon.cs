@@ -5,18 +5,9 @@ public class Weapon : MonoBehaviour
     bool _isHitting = false;
     
     public SlimeEnemy slime;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    public int weaponDamage = 10;
+    
+    //check on enemy hitting
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "enemy")
@@ -25,6 +16,7 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    //check off enemy hitting
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.tag == "enemy")
@@ -33,6 +25,7 @@ public class Weapon : MonoBehaviour
         }
     }
     
+    //attack enemy
     public void OnTryAttack()
     {
         if (_isHitting)
@@ -41,9 +34,16 @@ public class Weapon : MonoBehaviour
         }
     }
 
+    //end weapon effect
     public void OnEndEffect()
     {
         //Debug.Log("OnEndEffect");
         this.gameObject.SetActive(false);
+    }
+    
+    //void get weapon damage
+    public int WeaponDamage()
+    {
+        return weaponDamage;
     }
 }
