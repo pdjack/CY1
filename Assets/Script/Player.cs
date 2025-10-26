@@ -19,10 +19,6 @@ public class Player : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _weaponSr = weapon.GetComponent<SpriteRenderer>();
         _boxCollider_Weapon = weapon.GetComponent<BoxCollider2D>();
-        if (_weaponSr == null)
-        {
-            Debug.Log("null");
-        }
     }
     
     void Update()
@@ -38,6 +34,7 @@ public class Player : MonoBehaviour
             }
         }
 
+        //start weapon affect
         if (Input.GetKeyDown(KeyCode.F))
         {
             weapon.SetActive(true);
@@ -56,6 +53,7 @@ public class Player : MonoBehaviour
             _spriteRenderer.flipX = isFlipX;
             _weaponSr.flipX = isFlipX;
 
+            
             if (isFlipX)
             {
                 weapon.transform.localPosition = new Vector3(-0.5f, weapon.transform.localPosition.y, weapon.transform.localPosition.z);

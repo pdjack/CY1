@@ -1,18 +1,18 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class SlimeEnemy : MonoBehaviour
 {
     
-    public int slimeHp = 50;
+    public int slimeHp;
     public int jumpPower;
     public float maxSpeed;
     
     int _direction;
-
-    public GameObject weapon;
     
     public GameObject player;
+    public GameObject popUpPrefab;
     
     Rigidbody2D _rb;
     SpriteRenderer _sr;
@@ -25,10 +25,6 @@ public class SlimeEnemy : MonoBehaviour
         _anim = GetComponent<Animator>();
         _sr = GetComponent<SpriteRenderer>();
         
-        if (weapon == null)
-        {
-            Debug.Log("null");
-        }
     }
 
     // Update is called once per frame
@@ -90,12 +86,19 @@ public class SlimeEnemy : MonoBehaviour
         return _direction;
     }
 
-    public void OnDamaged()
+    public void OnDamaged(int damage)
     {
+        //popUp damage text
+        GameObject popUp = Instantiate(popUpPrefab, transform.position, Quaternion.identity);
+        Debug.Log("slime position: " + transform.position );
+        Debug.Log("player position: " + player.transform.position);
+        popUp.GetComponentInChildren<TMP_Text>().text = damage.ToString();
+
+        //damage affect
         _sr.color = new Color(1,0.3537736f,0.3537736f);
         _rb.AddForce(new Vector2(MoveDirection() * -20, _rb.linearVelocity.y), ForceMode2D.Impulse);
-        
-        slimeHp -= weapon.GetComponent<Weapon>().WeaponDamage();
+
+        slimeHp -= damage;
         if (slimeHp <= 0)
         {
             DieEffect();

@@ -25,25 +25,19 @@ public class Weapon : MonoBehaviour
         }
     }
     
-    //attack enemy
+    //at weapon animation on attack enemy
     public void OnTryAttack()
     {
         if (_isHitting)
         {
-            slime.OnDamaged();
+            slime.OnDamaged(weaponDamage);
         }
     }
 
-    //end weapon effect
+    //at the weapon animation end off weapon effect
     public void OnEndEffect()
     {
         //Debug.Log("OnEndEffect");
         this.gameObject.SetActive(false);
-    }
-    
-    //void get weapon damage
-    public int WeaponDamage()
-    {
-        return weaponDamage;
     }
 }
