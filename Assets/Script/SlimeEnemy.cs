@@ -18,7 +18,6 @@ public class SlimeEnemy : MonoBehaviour
     SpriteRenderer _sr;
     Animator _anim;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -26,8 +25,7 @@ public class SlimeEnemy : MonoBehaviour
         _sr = GetComponent<SpriteRenderer>();
         
     }
-
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         //Move, move animation(true)
@@ -41,6 +39,7 @@ public class SlimeEnemy : MonoBehaviour
         //move animation(false)
         else
         {
+            _rb.linearVelocity = Vector2.zero;
             _anim.SetBool("isWalk", false);
         }
         
@@ -90,13 +89,12 @@ public class SlimeEnemy : MonoBehaviour
     {
         //popUp damage text
         GameObject popUp = Instantiate(popUpPrefab, transform.position, Quaternion.identity);
-        Debug.Log("slime position: " + transform.position );
-        Debug.Log("player position: " + player.transform.position);
         popUp.GetComponentInChildren<TMP_Text>().text = damage.ToString();
 
         //damage affect
         _sr.color = new Color(1,0.3537736f,0.3537736f);
         _rb.AddForce(new Vector2(MoveDirection() * -20, _rb.linearVelocity.y), ForceMode2D.Impulse);
+        _anim.SetTrigger("doDamaged");
 
         slimeHp -= damage;
         if (slimeHp <= 0)

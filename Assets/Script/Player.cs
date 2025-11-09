@@ -1,3 +1,5 @@
+using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -12,6 +14,9 @@ public class Player : MonoBehaviour
     SpriteRenderer _weaponSr;
     
     BoxCollider2D _boxCollider_Weapon;
+    
+    public InventoryObject inventory;
+    
     void Awake()
     {
         _rigid = GetComponent<Rigidbody2D>();
@@ -112,6 +117,19 @@ public class Player : MonoBehaviour
             }
         }
     }
-    
-    
+
+    public void OnTriggerEnter2D(Collider2D other)
+    {
+        var Item = other.GetComponent<Item>();
+        if (Item)
+        {
+            inventory.AddItem(Item.item, 1);
+            Destroy(other.gameObject);
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        inventory.Container.Clear();
+    }
 }
