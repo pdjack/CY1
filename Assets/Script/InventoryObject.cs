@@ -1,12 +1,25 @@
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Inventory", menuName = "Inventory System/Inventory")]
-public class InventoryObject : ScriptableObject
+public class InventoryObject : ScriptableObject, ISerializationCallbackReceiver
 {
-    public ItemDbObject database;
+    public string savePath;
+    private ItemDbObject database;
     public List<InventorySlot> Container = new List<InventorySlot>();
+
+    private void OnEnable()
+    {
+#if UNITY_EDITOR
+        database = (ItemDbObject)AssetDatabase.LoadAssetAtPath("Assets/Resources/ItemDatabase.asset", typeof(ItemDbObject));
+        Debug.Log("database.items.Length" +database.items.Length);
+#else
+        database = Resources.Load<ItemDbObject>("ItemDatabase");
+#endif
+    }
 
     public void AddItem(ItemObject _item, int _amount)
     {
@@ -19,6 +32,40 @@ public class InventoryObject : ScriptableObject
             }
         }
         Container.Add(new InventorySlot(database.GetId[_item], _item, _amount));
+        
+    }
+
+    public void Save()
+    {
+        string saveData = JsonUtility.ToJson(this,true);
+        BinaryFormatter bf = new BinaryFormatter();
+        Debug.Log(string.Concat(Application.persistentDataPath, savePath));
+        FileStream file = File.Create(string.Concat(Application.persistentDataPath, savePath));
+        bf.Serialize(file, saveData);
+        file.Close();
+    }
+
+    public void Load()
+    {
+        if (File.Exists(string.Concat(Application.persistentDataPath, savePath)))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(string.Concat(Application.persistentDataPath, savePath), FileMode.Open);
+            JsonUtility.FromJsonOverwrite(bf.Deserialize(file).ToString(), this);
+            file.Close();
+        }
+    }
+    
+    public void OnAfterDeserialize()
+    {
+        for (int i = 0; i < Container.Count; i++)
+        {
+            Container[i].item = database.GetItem[Container[i].id];
+        }
+    }
+
+    public void OnBeforeSerialize()
+    {
         
     }
 }

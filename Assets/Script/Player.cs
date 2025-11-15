@@ -28,6 +28,16 @@ public class Player : MonoBehaviour
     
     void Update()
     {
+        //save, load  inventory
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            inventory.Save();
+        }
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            inventory.Load();
+        }
+        
         //jump, jump animation(true)
         if (Input.GetKeyDown(KeyCode.Space) && !_animator.GetBool("isJumping"))
         {
